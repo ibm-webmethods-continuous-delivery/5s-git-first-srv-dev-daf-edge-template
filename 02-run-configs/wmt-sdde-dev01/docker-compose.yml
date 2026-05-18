@@ -1,0 +1,25 @@
+services:
+  msr:
+    image: my-quick-msr-dev-image
+    build:
+      context: ./build
+      args:
+        - __ibm_wm_msr_image=${CONTAINER_IMAGE}:${CONTAINER_IMAGE_TAG}
+    ports:
+      - ${HOST_PORT_PREFIX}55:5555
+    hostname: ${ERT_NAME}
+    container_name: ${ERT_NAME}
+    volumes:
+      - ./application.properties:${GUEST_APP_PROPS_MOUNT_POINT}
+      # Our Code
+      - ../../01-code/is-packages/ExamplePackage/:${GUEST_IS_HOME}/packages/ExamplePackage/
+    environment:
+      - SAG_IS_CONFIG_PROPERTIES=${GUEST_APP_PROPS_MOUNT_POINT}
+      - GUEST_IS_HOME
+      - IS_ADMIN_PWD
+      # Required for ERT cloud registration
+      - ERT_NAME
+      - SAG_IS_CLOUD_REGISTER_URL
+      - SAG_IS_EDGE_CLOUD_ALIAS
+      - SAG_IS_CLOUD_REGISTER_TOKEN
+      - METERING_TOKEN
